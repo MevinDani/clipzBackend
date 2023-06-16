@@ -135,6 +135,7 @@ router.put('/:id', tokenMiddle, upload.single('image'), async (req, res) => {
 
 // get post(edit reload)
 router.get('/:id', (req, res) => {
+    console.log(req.params.id);
     Post.findById(req.params.id).then(post => {
         if (post) {
             res.status(200).json(post)
@@ -202,6 +203,15 @@ router.get('/likedPosts/:id', (req, res) => {
 // get followings post
 router.get('/followersPost/:id', (req, res) => {
     logic.getFollowingsPost(req.params.id).then((result) => {
+        res.status(200).json(result)
+    }).catch(err => {
+        res.status(400).json(err)
+    })
+})
+
+// get freinds post
+router.get('/freindspost/:id', (req, res) => {
+    logic.getFreindsPost(req.params.id).then((result) => {
         res.status(200).json(result)
     }).catch(err => {
         res.status(400).json(err)

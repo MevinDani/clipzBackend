@@ -236,5 +236,34 @@ getFollowingsPost = async (id) => {
     }
 }
 
+// get freinds post
+getFreindsPost = async (id) => {
+    try {
+        const user = await User.findOne({ _id: id })
+        if (user) {
+            let freindsPost = []
+            let freinds = []
+            let followers = []
+            let followings = []
+            followers = user.followers
+            followings = user.followings
+            freinds = followers.filter(i => followings.includes(i))
 
-module.exports = { getFollowingsPost, getlikedPost, dislikePost, likePost, getProfilePics, register, login, getUser, getUserN, getProfPost, followUser, followerList, unfollowUser }
+            const post = await Post.find().sort({ lastUpdated: -1 })
+            post.map(p => {
+                freinds.map(i => {
+                    if (p.creator == i) {
+                        freindsPost.push(p)
+                    }
+                })
+            })
+            return freindsPost
+        }
+
+    } catch (error) {
+        return error
+    }
+}
+
+
+module.exports = { getFreindsPost, getFollowingsPost, getlikedPost, dislikePost, likePost, getProfilePics, register, login, getUser, getUserN, getProfPost, followUser, followerList, unfollowUser }
