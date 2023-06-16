@@ -86,7 +86,7 @@ router.get('/idtoName/:id', (req, res) => {
     })
 })
 
-router.put('/profile/edit/', upload.single('image'), (req, res) => {
+router.put('/profile/edit/', upload.single('image'), async (req, res) => {
     // console.log(req.file);
     if (req.file) {
         cloudinary.uploader.upload(req.file.path, async (err, result) => {
@@ -98,43 +98,79 @@ router.put('/profile/edit/', upload.single('image'), (req, res) => {
                     message: 'Error'
                 })
             }
-            const editedUser = new User({
-                _id: req.body.id,
-                username: req.body.username,
-                about: req.body.about,
-                profilePic: result.url
-            })
+            const userOldDetails = await User.findById(req.body.id)
+            userOldDetails.username = req.body.username
+            userOldDetails.about = req.body.about
+            userOldDetails.profilePic = result.url
+            userOldDetails.followers = userOldDetails.followers
+            userOldDetails.followings = userOldDetails.followings
+            userOldDetails.followersName = userOldDetails.followersName
+            userOldDetails.followingsName = userOldDetails.followingsName
+
+            await userOldDetails.save()
+                .then((result) => {
+                    console.log(result);
+                    res.status(200).json({ message: 'Profile Edited Successfully', data: result });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(500).json({ message: 'Unauthorized user' });
+                });
+            // const editedUser = new User({
+            //     _id: req.body.id,
+            //     username: req.body.username,
+            //     about: req.body.about,
+            //     profilePic: result.url
+            // })
             // console.log(editedUser);
-            User.updateOne({ _id: req.body.id }, editedUser).then((result) => {
-                if (result.modifiedCount > 0) {
-                    // console.log(result);
-                    res.status(200).json({ message: 'Profile Edited Successfully' })
-                } else {
-                    console.log(Error);
-                    res.status(401).json({ message: 'Unauthorized user' })
-                }
-            }).catch((err) => {
-                console.log(err);
-            })
+            // User.updateOne({ _id: req.body.id }, editedUser).then((result) => {
+            //     if (result.modifiedCount > 0) {
+            //         // console.log(result);
+            //         res.status(200).json({ message: 'Profile Edited Successfully' })
+            //     } else {
+            //         console.log(Error);
+            //         res.status(401).json({ message: 'Unauthorized user' })
+            //     }
+            // }).catch((err) => {
+            //     console.log(err);
+            // })
         })
     } else {
-        const editedUser = new User({
-            _id: req.body.id,
-            username: req.body.username,
-            about: req.body.about,
-            profilePic: req.body.image
-        })
-        User.updateOne({ _id: req.body.id }, editedUser).then((result) => {
-            if (result.modifiedCount > 0) {
-                // console.log(result);
-                res.status(200).json({ message: 'Profile Edited Successfully' })
-            } else {
-                console.log(Error);
-                res.status(401).json({ message: 'Unauthorized user' })
-            }
-        }).catch((err) => {
-            console.log(err);
-        })
+        const userOldDetails = await User.findById(req.body.id)
+        userOldDetails.username = req.body.username
+        userOldDetails.about = req.body.about
+        userOldDetails.profilePic = req.body.image
+        userOldDetails.followers = userOldDetails.followers
+        userOldDetails.followings = userOldDetails.followings
+        userOldDetails.followersName = userOldDetails.followersName
+        userOldDetails.followingsName = userOldDetails.followingsName
+
+        await userOldDetails.save()
+            .then((result) => {
+                console.log(result);
+                res.status(200).json({ message: 'Profile Edited Successfully', data: result });
+            })
+            .catch((error) => {
+                console.log(error);
+                res.status(500).json({ message: 'Unauthorized user' });
+            });
+        // const editedUser = new User({
+        //     _id: req.body.id,
+        //     username: req.body.username,
+        //     about: req.body.about,
+        //     profilePic: req.body.image
+        // })
+        // User.updateOne({ _id: req.body.id }, editedUser).then((result) => {
+        //     if (result.modifiedCount > 0) {
+        //         // console.log(result);
+        //         res.status(200).json({ message: 'Profile Edited Successfully' })
+        //     } else {
+        //         console.log(Error);
+        //         res.status(401).json({ message: 'Unauthorized user' })
+        //     }
+        // }).catch((err) => {
+        //     console.log(err);
+        // })
     }
 })
 
