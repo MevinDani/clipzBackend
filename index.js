@@ -5,10 +5,13 @@ const userRoutes = require('./routes/user')
 const conversationRoutes = require('./routes/conversation')
 const messageRoutes = require('./routes/message')
 const app = express()
+require('dotenv').config();
+
 
 // app.use(cors({ origin: 'http://localhost:4200' }))
 
-mongoose.connect("mongodb+srv://admin:admin123@clusterclipz.fjbilpl.mongodb.net/?retryWrites=true&w=majority")
+// mongoose.connect("mongodb+srv://admin:admin123@clusterclipz.fjbilpl.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.MONGO_URL)
 
 const User = require('./service/userDb')
 const Post = require('./service/db')
