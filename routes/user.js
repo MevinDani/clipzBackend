@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../service/userDb')
+const { Post, Comment } = require('../service/db')
 // const bcrypt = require('bcrypt')
 const logic = require('../logic/logic')
 const { route } = require('./posts')
