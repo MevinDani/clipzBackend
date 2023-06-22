@@ -109,6 +109,18 @@ router.put('/profile/edit/', upload.single('image'), async (req, res) => {
             userOldDetails.followingsName = userOldDetails.followingsName
 
             await Post.updateMany({ creator: req.body.id }, { name: req.body.username })
+            // Update followers' names
+            await User.updateMany(
+                { followers: req.body.id },
+                { $set: { "followersName.$": req.body.username } }
+            );
+
+            // Update followings' names
+            await User.updateMany(
+                { followings: req.body.id },
+                { $set: { "followingsName.$": req.body.username } }
+            );
+
             await userOldDetails.save()
                 .then((result) => {
                     console.log(result);
@@ -130,6 +142,17 @@ router.put('/profile/edit/', upload.single('image'), async (req, res) => {
         userOldDetails.followingsName = userOldDetails.followingsName
 
         await Post.updateMany({ creator: req.body.id }, { name: req.body.username })
+        // Update followers' names
+        await User.updateMany(
+            { followers: req.body.id },
+            { $set: { "followersName.$": req.body.username } }
+        );
+
+        // Update followings' names
+        await User.updateMany(
+            { followings: req.body.id },
+            { $set: { "followingsName.$": req.body.username } }
+        );
         await userOldDetails.save()
             .then((result) => {
                 console.log(result);
