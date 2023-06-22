@@ -109,6 +109,7 @@ router.put('/profile/edit/', upload.single('image'), async (req, res) => {
             userOldDetails.followingsName = userOldDetails.followingsName
 
             await Post.updateMany({ creator: req.body.id }, { name: req.body.username })
+            await Comment.updateMany({ userId: req.body.id }, { $set: { name: req.body.username } });
             // Update followers' names
             await User.updateMany(
                 { followers: req.body.id },
@@ -142,6 +143,7 @@ router.put('/profile/edit/', upload.single('image'), async (req, res) => {
         userOldDetails.followingsName = userOldDetails.followingsName
 
         await Post.updateMany({ creator: req.body.id }, { name: req.body.username })
+        await Comment.updateMany({ userId: req.body.id }, { $set: { name: req.body.username } });
         // Update followers' names
         await User.updateMany(
             { followers: req.body.id },
